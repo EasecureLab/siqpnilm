@@ -154,7 +154,7 @@ class IterativeKmeansHMM:
         centers.sort()
         for new_label, old_label in enumerate(sorted_labels):
             labels[labels == old_label] = new_label * 10000
-        labels = labels // 10000  //zhang.feiyang for integer python3: '//', python2:'/'
+        labels = labels // 10000  #zhang.feiyang for integer python3: '//', python2:'/'
 
         # remove clusters which have only or less than min_members
         min_members = 1

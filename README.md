@@ -12,3 +12,6 @@ Journal: IEEE Transactions on Smart Grid
 Vol/No/Pages: n/a
 Accepted: 07-Nov-2016
 DOI: n/a
+
+
+使用anaconda的python3，用pycharm IDE开发调试，删除库上的.idea和 venv文件夹，便于pycharm到不同的Pc上重新配置工程环境
