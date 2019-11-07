@@ -8,8 +8,8 @@ import numpy as np
 import collections
 import copy
 import time
-from gurobipy import *
-
+#from gurobipy import *
+import gurobipy
 
 class SIQP(object):
 
@@ -27,19 +27,20 @@ class SIQP(object):
 
     def __init__(self, aggregate, hmms, step_thr):
         self.timestamps = aggregate.index
-        aggregate.index = range(len(aggregate))
+        aggregate.index = list(range(len(aggregate)))
         self.aggregate = aggregate
         self.HMMs = hmms
         self.step_thr = step_thr
 
         self.n_appliances = len(hmms)
-        self.result = pd.DataFrame(index=self.aggregate.index, columns=range(self.n_appliances))  # init a DataFrame
-        self.estimate = pd.DataFrame(index=self.aggregate.index, columns=range(self.n_appliances))
+        self.result = pd.DataFrame(index=self.aggregate.index,
+                                   columns=list(range(self.n_appliances)))  # init a DataFrame
+        self.estimate = pd.DataFrame(index=self.aggregate.index, columns=list(range(self.n_appliances)))
 
     def solve(self):
         tic = time.time()
         T = len(self.aggregate)
-        print('Prepare to solve NILM, problem size is %s' % T)
+        print(('Prepare to solve NILM, problem size is %s' % T))
         if T > self.max_problem_size:
             pass
         segments = self.segment_aggregate()
@@ -60,7 +61,7 @@ class SIQP(object):
             probs = list()
 
             n = 0
-            for key, hmm in self.HMMs.iteritems():
+            for key, hmm in list(self.HMMs.items()):
                 trans_mat = hmm.trans_mat
                 state_dim = hmm.K
                 prob = np.zeros(state_dim)
@@ -94,10 +95,10 @@ class SIQP(object):
 
             toc = time.time() - tic
             length = float(len(segments))
-            print(
-                'Performing SIQP, segment sovled: No. %s out of total %s, ETA: %.2f seconds' %
-                (s, length, toc / ((s+1) / length) - toc)
-            )
+            print((
+                    'Performing SIQP, segment sovled: No. %s out of total %s, ETA: %.2f seconds' %
+                    (s, length, toc / ((s + 1) / length) - toc)
+            ))
 
         self.sol_time = time.time() - tic
         return
@@ -118,14 +119,14 @@ class SIQP(object):
 
     def solve_first_segment(self, level, seg_dur):
         # create new Gurobi model
-        model = Model('siqp')
+        model = gurobipy.Model('siqp')
 
         x_list = list()
         constraint_list = list()
         # adding variables
         n = 0
-        for key, hmm in self.HMMs.iteritems():
-            x = np.array([model.addVar(vtype=GRB.BINARY, name='x_%s_%s' % (n, k)) for k in range(hmm.K)])
+        for key, hmm in list(self.HMMs.items()):
+            x = np.array([model.addVar(vtype=gurobipy.GRB.BINARY, name='x_%s_%s' % (n, k)) for k in range(hmm.K)])
             x = x.reshape((hmm.K, 1))
             x_list.append(x)
 
@@ -138,7 +139,7 @@ class SIQP(object):
         agg_mu = 0
         model.update()
         n = 0
-        for key, hmm in self.HMMs.iteritems():
+        for key, hmm in list(self.HMMs.items()):
             mus = hmm.obs_distns['mu'].values.astype(float).reshape((1, hmm.K))
             trans_mat = hmm.trans_mat
             self_trans = copy.copy(np.diag(trans_mat).reshape((1, hmm.K)))
@@ -150,16 +151,16 @@ class SIQP(object):
 
         obj += lognormpdf(level, agg_mu, 2)  # set a reasonable overall sigma
 
-        model.setObjective(obj, GRB.MAXIMIZE)
+        model.setObjective(obj, gurobipy.GRB.MAXIMIZE)
         model.setParam('OutputFlag', False)
         model.optimize()
 
         # populate optimisation result
         result = np.zeros((self.n_appliances, 1))
         cal_level = 0
-        if model.Status == GRB.OPTIMAL:
+        if model.Status == gurobipy.GRB.OPTIMAL:
             n = 0
-            for key, hmm in self.HMMs.iteritems():
+            for key, hmm in list(self.HMMs.items()):
                 x_values = value(x_list[n])
                 result[n] = np.argmax(x_values)
                 mus = hmm.obs_distns['mu'].values.astype(float).reshape((1, hmm.K))
@@ -172,17 +173,16 @@ class SIQP(object):
 
     def solver_subsequent_segment(self, level, seg_dur, last_result):
         # create new Gurobi model
-        model = Model('siqp')
+        model = gurobipy.Model('siqp')
 
         x_list = list()
         last_x_list = list()
         constraint_list = list()
         # adding variables
         n = 0
-        for key, hmm in self.HMMs.iteritems():
-
+        for key, hmm in list(self.HMMs.items()):
             # define variables
-            x = np.array([model.addVar(vtype=GRB.BINARY, name='x_%s_%s' % (n, k)) for k in range(hmm.K)])
+            x = np.array([model.addVar(vtype=gurobipy.GRB.BINARY, name='x_%s_%s' % (n, k)) for k in range(hmm.K)])
             x = x.reshape((hmm.K, 1))
             x_list.append(x)
             last_x = np.zeros((hmm.K, 1))  # init var for holding previous state
@@ -198,7 +198,7 @@ class SIQP(object):
         model.update()
         change = 0
         n = 0
-        for key, hmm in self.HMMs.iteritems():
+        for key, hmm in list(self.HMMs.items()):
             mus = hmm.obs_distns['mu'].values.astype(float).reshape((1, hmm.K))
             trans_mat = hmm.trans_mat
             self_trans = copy.copy(np.diag(trans_mat).reshape((1, hmm.K)))
@@ -209,7 +209,7 @@ class SIQP(object):
             trans = copy.copy(trans_mat[last_result[n], :])
             last_x = last_x_list[n]
             last_x[last_result[n], 0] = 1
-            change += 1.0/2.0 * np.dot((last_x - x_list[n]).T, (last_x - x_list[n]))[0, 0]
+            change += 1.0 / 2.0 * np.dot((last_x - x_list[n]).T, (last_x - x_list[n]))[0, 0]
             coef2 = np.log(trans)
             coef2[~np.isfinite(coef2)] = - 1e50  # prevent error, set to a very small value
             obj += np.dot(coef2, x_list[n])[0, 0]
@@ -220,16 +220,16 @@ class SIQP(object):
         model.addConstr(change <= 2)
         model.update()
 
-        model.setObjective(obj, GRB.MAXIMIZE)
+        model.setObjective(obj, gurobipy.GRB.MAXIMIZE)
         model.setParam('OutputFlag', False)
         model.optimize()
 
         # populate optimisation result
         result = np.zeros((self.n_appliances, 1))
         cal_level = 0
-        if model.Status == GRB.OPTIMAL:
+        if model.Status == gurobipy.GRB.OPTIMAL:
             n = 0
-            for key, hmm in self.HMMs.iteritems():
+            for key, hmm in list(self.HMMs.items()):
                 x_values = value(x_list[n])
                 result[n] = np.argmax(x_values)
                 mus = hmm.obs_distns['mu'].values.astype(float).reshape((1, hmm.K))

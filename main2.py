@@ -13,10 +13,10 @@ from evaluator import *
 
 pd.set_option('display.width', 200)
 
-train = DataSet(os.path.join('data', 'redd.h5'))
+train = DataSet('C:/Users/davwang/Desktop/siqpnilm-master-copy/data/REDD/redd_low.h5')
 # train.set_window(end='24-4-2011')
 train.set_window(end='28-5-2011')  # for house 6
-test = DataSet(os.path.join('data', 'redd.h5'))
+test = DataSet('C:/Users/davwang/Desktop/siqpnilm-master-copy/data/REDD/redd_low.h5')
 # test.set_window(start='24-4-2011')
 test.set_window(start='28-5-2011')  # for house 6
 
@@ -29,18 +29,18 @@ for building in buildings:
     apps = [app.identifier.type for app in appliances]
     apps = list(set(apps))
 
-    index_train = train.buildings[building].elec['fridge'].load().next().resample('1min', np.median).index
-    index_test = test.buildings[building].elec['fridge'].load().next().resample('1min', np.median).index
+    index_train = train.buildings[building].elec['fridge'].load().__next__().resample('1min', np.median).index
+    index_test = test.buildings[building].elec['fridge'].load().__next__().resample('1min', np.median).index
     data_train = pd.DataFrame(index=index_train, columns=apps)
     data_test = pd.DataFrame(index=index_test, columns=apps)
     hmms = collections.OrderedDict()
     step_thres = 50
     for app in apps:
-        load_train = train.buildings[building].elec[app].load().next()
+        load_train = next(train.buildings[building].elec[app].load())
         load_train.fillna(0, inplace=True)
         load_train = load_train.resample('1min', np.median)
 
-        load_test = test.buildings[building].elec[app].load().next()
+        load_test = next(test.buildings[building].elec[app].load())
         load_test.fillna(0, inplace=True)
         load_test = load_test.resample('1min', np.median)
 
@@ -55,7 +55,7 @@ for building in buildings:
     solver.solve()
     ground_truth = data_test[apps]
     evaluator = Evaluator(ground_truth, solver.estimate, solver.aggregate, standby=10)
-    print evaluator.report
+    print(evaluator.report)
     evaluator.show()
     evaluator.report.to_csv(
         os.path.join(

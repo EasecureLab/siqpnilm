@@ -58,8 +58,9 @@ for n_appliance in range(1, 20):
     solver.solve()
     ground_truth = data[app_ids].tail(36 * 1440)
     evaluator = Evaluator(ground_truth, solver.estimate, solver.aggregate)
-    print evaluator.report
-    evaluator.report.to_csv(os.path.join('data', 'AMPdsR1_report_%i_appliances_for_train_%i_days_test_36_days.csv' % (n_appliance, days)))
+    print(evaluator.report)
+    evaluator.report.to_csv(
+        os.path.join('data', 'AMPdsR1_report_%i_appliances_for_train_%i_days_test_36_days.csv' % (n_appliance, days)))
     sol_times.loc[n_appliance, 'sol_time'] = solver.sol_time
     sol_times.to_csv(os.path.join('data', 'sol_time_vs_number_appliances.csv'))
     # evaluator.show()

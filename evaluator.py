@@ -50,8 +50,8 @@ class Evaluator:
         self.update()
 
     def update(self, standby=1.0):
-        self.estimate.index = range(self.T)
-        self.ground_truth.index = range(self.T)
+        self.estimate.index = list(range(self.T))
+        self.ground_truth.index = list(range(self.T))
         apps = list(self.ground_truth)
         self.count_tp = np.zeros(self.n_appliances)
         self.count_tn = np.zeros(self.n_appliances)
@@ -171,7 +171,7 @@ def quotient(n, d):
     try:
         iter(n)
         if len(n) == len(d):
-            return np.array(map(scalar, n, d))
+            return np.array(list(map(scalar, n, d)))
     except TypeError:
         return scalar(n, d)
 
