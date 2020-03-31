@@ -22,6 +22,8 @@ DOI: n/a
 redd_low.h5 文件比较大，需要存在其他地方
 
 # conda 安装环境
+##
+https://github.com/nilmtk/nilmtk/blob/master/docs/manual/user_guide/install_user.md
 ## 
 conda create --name nilmtk-env 
 ## 
