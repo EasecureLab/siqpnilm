@@ -22,21 +22,21 @@ DOI: n/a
 redd_low.h5 文件比较大，需要存在其他地方
 
 # conda 安装环境
-## 1
+## 
 conda create --name nilmtk-env 
-## 2
+## 
 conda config --add channels conda-forge
-## 3
+## 
 conda activate nilmtk-env
-## 4
+## 
 conda install -c nilmtk nilmtk
-## 5
+## 
 conda install gurobi
-## 6
-conda install pandas=0.25.1
 ## 
 grbgetkey 49523af6-722f-11ea-ab05-020d093b5256
 ##
 GRB_LICENSE_FILE=C:\WINDOWS\system32\gurobi\gurobi.lic
+## 
+conda install pandas=0.25.1
 # 注意注意
 pandas的版本最好回退到0.25.1
