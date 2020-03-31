@@ -34,5 +34,7 @@ conda install -c nilmtk nilmtk
 conda install gurobi
 ## 6
 conda install pandas=0.25.1
+## 
+grbgetkey 49523af6-722f-11ea-ab05-020d093b5256
 # 注意注意
 pandas的版本最好回退到0.25.1
