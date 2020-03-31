@@ -13,10 +13,11 @@ from evaluator import *
 
 pd.set_option('display.width', 200)
 
-train = DataSet('C:/Users/davwang/Desktop/siqpnilm/data/REDD/redd_low.h5')
+
+train = DataSet(os.path.join('data', 'redd_low.h5'))
 # train.set_window(end='24-4-2011')
 train.set_window(end='28-5-2011')  # for house 6
-test = DataSet('C:/Users/davwang/Desktop/siqpnilm/data/REDD/redd_low.h5')
+test = DataSet(os.path.join('data', 'redd_low.h5'))
 # test.set_window(start='24-4-2011')
 test.set_window(start='28-5-2011')  # for house 6
 
