@@ -16,10 +16,19 @@ DOI: n/a
 
 使用anaconda的python3，用pycharm IDE开发调试，删除库上的.idea和 venv文件夹，便于pycharm到不同的Pc上重新配置工程环境
 
-# 注意注意
-pandas的版本最好回退到0.25.1
+
 
 # data
 redd_low.h5 文件比较大，需要存在其他地方
 
 # conda 安装环境
+
+conda create --name nilmtk-env 
+conda config --add channels conda-forge
+conda activate nilmtk-env
+conda install -c nilmtk nilmtk
+conda install gurobi
+
+conda install pandas=0.25.1
+# 注意注意
+pandas的版本最好回退到0.25.1
