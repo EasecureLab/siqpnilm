@@ -6,13 +6,14 @@
 import os
 import pandas as pd
 import collections
-from nilmtk import DataSet, HDFDataStore
+from nilmtk import DataSet, HDFDataStore, dataset_converters
 import nilm
 from ikhmm import *
 from evaluator import *
 
 pd.set_option('display.width', 200)
 
+# dataset_converters.convert_redd('C:\\Users\\davwang\\Desktop\\siqpnilm\\low_freq', 'data/redd_low.h5')
 
 train = DataSet(os.path.join('data', 'redd_low.h5'))
 # train.set_window(end='24-4-2011')
@@ -64,5 +65,3 @@ for building in buildings:
                     % (building, max_states)
         )
     )
-
-
