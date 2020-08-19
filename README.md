@@ -43,6 +43,12 @@ grbgetkey 49523af6-722f-11ea-ab05-020d093b5256
 GRB_LICENSE_FILE=C:\WINDOWS\system32\gurobi\gurobi.lic
 ## 注意pandas版本，可能会影响数据读取和处理的部分函数（可能不需要）
 conda install pandas=0.25.1
+
+# matplotlib的版本要注意
+
+conda install matplotlib=3.2.1  (高版本redd的时间轴可能有错误)
+
 ## 至此，本地电脑创建了conda的环境
 Python 3.6 (nilmtk-env)
 C:\ProgramData\Anaconda3\envs\nilmtk-env\python.exe
+
