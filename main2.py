@@ -15,6 +15,8 @@ pd.set_option('display.width', 200)
 
 # 流程上先用来自redd的低频数据进行解压，然后用convert_redd工具进行转化为h5文件
 # dataset_converters.convert_redd('C:\\Users\\davwang\\Desktop\\siqpnilm\\data\\low_freq', 'data/redd_low.h5')
+# dataset_converters.convert_redd(r'./data/low_freq', 'data/redd_low.h5')
+
 
 train = DataSet(os.path.join('data', 'redd_low.h5'))
 # train.set_window(end='24-4-2011')

@@ -38,7 +38,10 @@ conda config --add channels http://conda.anaconda.org/gurobi
 ## 整数规划解析器gurobi
 conda install gurobi
 ## 该学术license需要去申请
-grbgetkey 49523af6-722f-11ea-ab05-020d093b5256
+https://www.gurobi.com/downloads/free-academic-license/
+
+grbgetkey xxx
+
 ## 配置本地的lic文件跟系统环境变量
 GRB_LICENSE_FILE=C:\WINDOWS\system32\gurobi\gurobi.lic
 ## 注意pandas版本，可能会影响数据读取和处理的部分函数（可能不需要）
